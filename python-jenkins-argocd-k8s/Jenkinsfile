@@ -13,22 +13,22 @@ pipeline {
     stages {
         
         stage('Checkout') {
-           steps {
+            steps {
                 git branch: 'main', 
                 url: 'https://github.com/kamalakar22/Jenkins-Zero-To-Hero.git'
-           }
+            }
         }
 
         stage('Docker Login') {
-           steps {
-               script {
-                   // Login to Docker Hub if needed
-                   // docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-                   //     // This block will automatically log out after it finishes
-                   //     echo 'Logged in to Docker Hub'
-                   // }
-                   // This step may not be necessary if the image is publicly available
-               }
+            steps {
+                script {
+                    // Login to Docker Hub if needed
+                    // docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                    //     // This block will automatically log out after it finishes
+                    //     echo 'Logged in to Docker Hub'
+                    // }
+                    // This step may not be necessary if the image is publicly available
+                }
             }
         }
 
@@ -42,7 +42,7 @@ pipeline {
         }
 
         stage('Push the artifacts') {
-           steps {
+            steps {
                 script {
                     echo 'Push to Repo'
                     sh "docker push gundala22reddy/cicd:${BUILD_NUMBER}"
