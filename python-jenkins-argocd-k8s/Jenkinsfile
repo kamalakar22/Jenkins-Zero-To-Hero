@@ -1,5 +1,6 @@
 pipeline {
-    agent {
+    
+   agent {
         docker {
             image 'python:3'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
@@ -12,43 +13,34 @@ pipeline {
     
     stages {
         
-        stage('Checkout') {
-            steps {
-                git branch: 'main', 
+        stage('Checkout'){
+           steps {
+                
+                 git branch: 'main', 
                 url: 'https://github.com/kamalakar22/Jenkins-Zero-To-Hero.git'
-            }
+           }
         }
 
-        stage('Docker Login') {
-            steps {
-                script {
-                    // Login to Docker Hub if needed
-                    // docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-                    //     // This block will automatically log out after it finishes
-                    //     echo 'Logged in to Docker Hub'
-                    // }
-                    // This step may not be necessary if the image is publicly available
+        stage('Build Docker'){
+            steps{
+                script{
+                    sh '''
+                    echo 'Buid Docker Image'
+                    docker build -t gundala22reddy/cicd:${BUILD_NUMBER} .
+                    '''
                 }
             }
         }
 
-        stage('Build Docker') {
-            steps {
-                script {
-                    echo 'Build Docker Image'
-                    sh "docker build -t gundala22reddy/cicd:${BUILD_NUMBER} ."
-                }
-            }
-        }
-
-        stage('Push the artifacts') {
-            steps {
-                script {
+        stage('Push the artifacts'){
+           steps{
+                script{
+                    sh '''
                     echo 'Push to Repo'
-                    sh "docker push gundala22reddy/cicd:${BUILD_NUMBER}"
+                    docker push gundala22reddy/cicd:${BUILD_NUMBER}
+                    '''
                 }
             }
-        }
-       
+        }  
     }
 }
