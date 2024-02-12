@@ -1,9 +1,10 @@
-
 pipeline {
-    
-    agent any {
-	    docker { image 'python3' }
-	}
+    agent {
+        docker {
+            image 'python3'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
@@ -11,11 +12,10 @@ pipeline {
     
     stages {
         
-        stage('Checkout'){
+        stage('Checkout') {
            steps {
                 git branch: 'main', 
-				url: 'https://github.com/kamalakar22/Jenkins-Zero-To-Hero.git'
-                
+                url: 'https://github.com/kamalakar22/Jenkins-Zero-To-Hero.git'
            }
         }
 
@@ -31,24 +31,20 @@ pipeline {
             }
         }
 
-        stage('Build Docker'){
-            steps{
-                script{
-                    sh '''
-                    echo 'Buid Docker Image'
-                    docker build -t gundala22reddy/cicd:${BUILD_NUMBER} .
-                    '''
+        stage('Build Docker') {
+            steps {
+                script {
+                    echo 'Build Docker Image'
+                    sh "docker build -t gundala22reddy/cicd:${BUILD_NUMBER} ."
                 }
             }
         }
 
-        stage('Push the artifacts'){
-           steps{
-                script{
-                    sh '''
+        stage('Push the artifacts') {
+           steps {
+                script {
                     echo 'Push to Repo'
-                    docker push gundala22reddy/cicd:${BUILD_NUMBER}
-                    '''
+                    sh "docker push gundala22reddy/cicd:${BUILD_NUMBER}"
                 }
             }
         }
